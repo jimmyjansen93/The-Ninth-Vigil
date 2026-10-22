@@ -10,18 +10,24 @@ import { defineConfig } from 'vite';
  */
 const townBoot = {
   name: 'nona-town-boot',
-  transformIndexHtml() {
-    return [
-      {
-        tag: 'script',
-        attrs: { type: 'module', src: '/src/world/town/Boot.js' },
-        injectTo: 'head-prepend',
-      },
-    ];
+  transformIndexHtml: {
+    // Run before Vite's HTML processing so the injected entry is bundled too.
+    order: 'pre',
+    handler() {
+      return [
+        {
+          tag: 'script',
+          attrs: { type: 'module', src: '/src/world/town/Boot.js' },
+          injectTo: 'head-prepend',
+        },
+      ];
+    },
   },
 };
 
 export default defineConfig({
+  // Relative URLs work under a GitHub Pages repository path and in preview.
+  base: './',
   plugins: [townBoot],
   server: { port: 5187, strictPort: true },
   preview: { port: 5188, strictPort: true },
